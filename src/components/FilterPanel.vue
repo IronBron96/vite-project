@@ -1,0 +1,128 @@
+<template>
+  <div class="bg-gray-800 p-6 rounded-lg shadow-lg w-[400px] sm:max-w-md">
+    <h2 class="text-xl font-bold mb-4 text-indigo-300">Filtri</h2>
+    <div class="space-y-4">
+      <div>
+        <label for="genre" class="block text-gray-300 text-sm font-semibold mb-1">Genere</label>
+        <select
+          id="genre"
+          v-model="filters.genre"
+          class="w-full p-2 rounded-lg bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white"
+        >
+          <option value="">Tutti i generi</option>
+          <option value="Action-Adventure">Action-Adventure</option>
+          <option value="Adventure">Adventure</option>
+          <option value="Action RPG">Action RPG</option>
+          <option value="Platform">Platform</option>
+          <option value="Arcade">Arcade</option>
+          <option value="Picchiaduro">Picchiaduro</option>
+          <option value="Horror">Horror</option>
+          <option value="FPS">FPS</option>
+          <option value="JRPG">JRPG</option>
+          <option value="Rhythm">Rhythm</option>
+          <option value="Sport">Sport</option>
+          <option value="Puzzle">Puzzle</option>
+          <option value="Survival">Survival</option>
+          <option value="Stealth">Stealth</option>
+        </select>
+      </div>
+      <div>
+        <label for="console" class="block text-gray-300 text-sm font-semibold mb-1">Console</label>
+        <select
+          id="console"
+          v-model="filters.console"
+          class="w-full p-2 rounded-lg bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white"
+        >
+          <option value="">Tutte le console</option>
+          <option value="PS5">PlayStation 5</option>
+          <option value="PS4">PlayStation 4</option>
+          <option value="PS3">PlayStation 3</option>
+          <option value="PS2">PlayStation 2</option>
+          <option value="PS1">PlayStation</option>
+          <option value="PSP">PSP</option>
+          <option value="GBA">GBA</option>
+          <option value="Wii">Wii</option>
+          <option value="NDS">NDS</option>
+          <option value="PC">PC</option>
+          <option value="Mobile">Mobile</option>
+        </select>
+      </div>
+      <div class="flex items-center">
+        <input
+          type="checkbox"
+          id="completed"
+          v-model="filters.completed"
+          class="form-checkbox h-5 w-5 text-indigo-600 bg-gray-700 border-gray-600 rounded focus:ring-indigo-500"
+        />
+        <label for="completed" class="ml-2 text-gray-300">Completato</label>
+      </div>
+      <div class="flex items-center">
+        <input
+          type="checkbox"
+          id="platinized"
+          v-model="filters.platinized"
+          class="form-checkbox h-5 w-5 text-indigo-600 bg-gray-700 border-gray-600 rounded focus:ring-indigo-500"
+        />
+        <label for="platinized" class="ml-2 text-gray-300">Platinato</label>
+      </div>
+    </div>
+    <div class="mt-6 flex justify-end gap-2">
+      <button
+        @click="applyFilters"
+        class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300"
+      >
+        Applica Filtri
+      </button>
+      <button
+        @click="clearFilters"
+        class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300"
+      >
+        Cancella Filtri
+      </button>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, defineEmits, watch } from 'vue'
+import { useGameStore } from '../stores/gameStore' // Importa lo store Pinia
+
+const emit = defineEmits(['apply-filters', 'clear-filters'])
+
+const gameStore = useGameStore()
+
+// Inizializza i filtri locali con i valori attuali dello store
+const filters = ref({
+  genre: gameStore.filters.genre,
+  console: gameStore.filters.console,
+  completed: gameStore.filters.completed,
+  platinized: gameStore.filters.platinized,
+})
+
+// Watch per aggiornare i filtri dello store ogni volta che i filtri locali cambiano
+// Questo è importante per mantenere lo stato del form sincronizzato con lo store.
+watch(
+  () => gameStore.filters,
+  newFilters => {
+    filters.value = { ...newFilters }
+  },
+  { deep: true }
+)
+
+const applyFilters = () => {
+  gameStore.setFilters(filters.value) // Applica i filtri allo store
+  emit('apply-filters') // Emette l'evento al genitore (es. per chiudere il modale)
+}
+
+const clearFilters = () => {
+  // Resetta i filtri locali
+  filters.value = {
+    genre: '',
+    console: '',
+    completed: false,
+    platinized: false,
+  }
+  gameStore.clearFilters() // Chiama l'azione per cancellare i filtri nello store
+  emit('clear-filters') // Emette l'evento al genitore
+}
+</script>

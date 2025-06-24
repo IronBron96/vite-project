@@ -1,0 +1,241 @@
+<template>
+  <div class="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-3xl mx-auto">
+    <h2 class="text-2xl font-bold mb-6 text-indigo-300">
+      {{ isEditing ? 'Modifica Gioco' : 'Aggiungi Nuovo Gioco' }}
+    </h2>
+    <form @submit.prevent="saveGame" class="space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label for="title" class="block text-sm font-semibold text-gray-300 mb-1">Titolo</label>
+          <input id="title" v-model="gameData.title" type="text" required class="input w-full" />
+        </div>
+
+        <div>
+          <label for="genre" class="block text-sm font-semibold text-gray-300 mb-1">Genere</label>
+          <select id="genre" v-model="gameData.genre" required class="input w-full">
+            <option value="">Seleziona un genere</option>
+            <option v-for="genre in knownGenres" :key="genre" :value="genre">
+              {{ genre }}
+            </option>
+          </select>
+        </div>
+
+        <div>
+          <label for="console" class="block text-sm font-semibold text-gray-300 mb-1">
+            Console
+          </label>
+          <select id="console" v-model="gameData.console" required class="input w-full">
+            <option value="">Seleziona una console</option>
+            <option v-for="console in knownConsoles" :key="console" :value="console">
+              {{ console }}
+            </option>
+          </select>
+        </div>
+
+        <div>
+          <label for="releaseYear" class="block text-sm font-semibold text-gray-300 mb-1">
+            Uscita (italia)
+          </label>
+          <input id="releaseYear" v-model="gameData.releaseDate" type="date" class="input w-full" />
+        </div>
+
+        <div class="md:col-span-2">
+          <label for="softwareHouse" class="block text-sm font-semibold text-gray-300 mb-1">
+            Software House
+          </label>
+          <input id="softwareHouse" v-model="gameData.developer" type="text" class="input w-full" />
+        </div>
+
+        <div class="md:col-span-2">
+          <label for="description" class="block text-sm font-semibold text-gray-300 mb-1">
+            Descrizione
+          </label>
+          <textarea
+            id="description"
+            v-model="gameData.description"
+            rows="4"
+            class="input w-full"
+          ></textarea>
+        </div>
+
+        <div class="md:col-span-2">
+          <label for="coverImageUrl" class="block text-sm font-semibold text-gray-300 mb-1">
+            URL Copertina
+          </label>
+          <input id="coverImageUrl" v-model="gameData.cover" type="text" class="input w-full" />
+        </div>
+      </div>
+
+      <h3 class="text-xl font-bold text-indigo-300">Media</h3>
+      <div
+        v-for="(media, index) in gameData.media"
+        :key="index"
+        class="flex gap-2 items-center mb-2"
+      >
+        <select v-model="media.type" class="input">
+          <option value="image">Immagine</option>
+          <option value="youtube">YouTube</option>
+        </select>
+        <input v-model="media.url" type="text" placeholder="URL del media" class="input flex-1" />
+        <button type="button" @click="removeMedia(index)" class="text-red-500 hover:text-red-700">
+          ✕
+        </button>
+      </div>
+      <button type="button" @click="addMedia" class="btn-secondary">Aggiungi Media</button>
+
+      <h3 class="text-xl font-bold text-indigo-300">Valutazioni</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div
+          v-for="key in Object.keys(gameData.ratings).filter(k => ratingLabels[k])"
+          :key="key"
+          class="flex items-center"
+        >
+          <label class="block text-sm font-semibold text-gray-300 w-28 capitalize">
+            {{ ratingLabels[key] }}:
+          </label>
+          <StarRating
+            :rating="gameData.ratings[key]"
+            :maxStars="key === 'general' ? 10 : 5"
+            editable
+            @update:rating="gameData.ratings[key] = $event"
+          />
+        </div>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <label class="inline-flex items-center gap-2 text-gray-300">
+          <input
+            type="checkbox"
+            v-model="gameData.completed"
+            class="form-checkbox text-indigo-600"
+          />
+          Completato
+        </label>
+        <label class="inline-flex items-center gap-2 text-gray-300">
+          <input
+            type="checkbox"
+            v-model="gameData.platinized"
+            class="form-checkbox text-indigo-600"
+          />
+          Platinato
+        </label>
+      </div>
+
+      <div class="flex justify-end gap-3 pt-4">
+        <button type="submit" class="btn-primary">
+          {{ isEditing ? 'Salva Modifiche' : 'Aggiungi Gioco' }}
+        </button>
+        <button type="button" @click="$emit('game-saved')" class="btn-secondary">Annulla</button>
+      </div>
+    </form>
+  </div>
+</template>
+
+<script setup>
+import { ref, defineProps, defineEmits, toRef } from 'vue'
+import { useGameStore } from '../stores/gameStore'
+import StarRating from './StarRating.vue'
+
+const props = defineProps({
+  gameToEdit: Object,
+})
+
+const emit = defineEmits(['game-saved'])
+const gameStore = useGameStore()
+
+const knownGenres = ref([
+  'Adventure',
+  'Action-Adventure',
+  'Action RPG',
+  'JRPG',
+  'Picchiaduro',
+  'Horror',
+  'Platform',
+  'FPS',
+  'Rhythm',
+  'Sport',
+  'Puzzle',
+  'Survival',
+  'Arcade',
+  'Stealth',
+])
+
+const knownConsoles = ref(['PSI', 'PS2', 'PS3', 'PS4', 'PS5', 'psp', 'PC', 'GBA', 'Wii', 'NDS'])
+
+const defaultGameData = {
+  id: null,
+  title: '',
+  genre: '',
+  console: '',
+  releaseYear: null,
+  softwareHouse: '',
+  description: '',
+  coverImageUrl: '',
+  completed: false,
+  platinized: false,
+  media: null,
+  ratings: {
+    graphic: 0,
+    story: 0,
+    audio: 0,
+    gameplay: 0,
+    general: 0, // invece di 'overall'
+  },
+}
+
+const ratingLabels = {
+  graphic: 'Grafica',
+  story: 'Storia',
+  audio: 'Audio',
+  gameplay: 'Gameplay',
+  general: 'Apprezzamento',
+}
+
+const gameData = toRef(props.gameToEdit || { ...defaultGameData })
+const isEditing = toRef(!!props.gameToEdit)
+
+const addMedia = () => {
+  if (gameData.value.media) {
+    gameData.value.media.push({ type: 'image', url: '' })
+  } else {
+    gameData.value.media = [{ type: 'image', url: '' }]
+  }
+}
+
+const removeMedia = index => {
+  gameData.value.media.splice(index, 1)
+}
+
+const saveGame = async () => {
+  // Aggiungi nuovi valori se non esistono
+  if (gameData.value.genre && !knownGenres.value.includes(gameData.value.genre)) {
+    knownGenres.value.push(gameData.value.genre)
+    knownGenres.value.sort((a, b) => a.localeCompare(b))
+  }
+  if (gameData.value.console && !knownConsoles.value.includes(gameData.value.console)) {
+    knownConsoles.value.push(gameData.value.console)
+    knownConsoles.value.sort((a, b) => a.localeCompare(b))
+  }
+
+  if (isEditing.value) {
+    await gameStore.updateGame(gameData.value)
+  } else {
+    await gameStore.addGame({ ...gameData.value, id: Date.now().toString() })
+  }
+
+  emit('game-saved')
+  gameData.value = { ...defaultGameData }
+}
+</script>
+
+<style scoped>
+.input {
+  @apply p-2 rounded-lg bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white placeholder-gray-400;
+}
+.btn-primary {
+  @apply bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300;
+}
+.btn-secondary {
+  @apply bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300;
+}
+</style>
