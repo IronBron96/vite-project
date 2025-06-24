@@ -43,8 +43,8 @@
 
     <!-- Basic Game Information -->
     <div class="p-4">
-      <h3 class="text-xl font-bold text-indigo-300 mb-1 truncate">{{ game.title }}</h3>
-      <p class="text-gray-300 text-sm mb-1 truncate">{{ game.genre }}</p>
+      <h3 class="text-l font-bold text-indigo-500 mb-1 truncate">{{ game.title }}</h3>
+      <p class="text-gray-300 text-sm mb-1 truncate">{{ game.genere }}</p>
       <p class="text-gray-400 text-xs truncate">{{ game.console }}</p>
     </div>
   </div>
@@ -65,7 +65,7 @@ const props = defineProps({
       return (
         typeof value.id === 'string' &&
         typeof value.title === 'string' &&
-        typeof value.genre === 'string' &&
+        typeof value.genere === 'string' &&
         typeof value.console === 'string'
         // Add more checks for other properties if strictly necessary
       )

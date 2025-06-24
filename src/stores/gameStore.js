@@ -7,7 +7,7 @@ export const useGameStore = defineStore('gameStore', () => {
   const games = ref([])
   const searchTerm = ref('')
   const filters = ref({
-    genre: '',
+    genere: '',
     console: '',
     completed: false,
     platinized: false,
@@ -24,7 +24,7 @@ export const useGameStore = defineStore('gameStore', () => {
       games.value = response.map(game => ({
         id: game.id,
         title: game.title,
-        genre: game.genere,
+        genere: game.genere,
         console: game.console,
         releaseDate: game.released_at,
         completedDate: game.completed_at,
@@ -50,7 +50,7 @@ export const useGameStore = defineStore('gameStore', () => {
       await directus.request(
         createItem('dailypad', {
           title: newGame.title,
-          genere: newGame.genre,
+          genere: newGame.genere,
           console: newGame.console,
           released_at: newGame.releaseYear,
           completed_at: newGame.completed ? new Date().toISOString() : null,
@@ -63,7 +63,7 @@ export const useGameStore = defineStore('gameStore', () => {
           is_digital: false,
           rating: newGame.ratings,
           media: newGame.media,
-          cover: newGame.coverImageUrl,
+          cover: newGame.cover,
         })
       )
       await loadGames()
@@ -77,7 +77,7 @@ export const useGameStore = defineStore('gameStore', () => {
       await directus.request(
         updateItem('dailypad', updatedGame.id, {
           title: updatedGame.title,
-          genere: updatedGame.genre,
+          genere: updatedGame.genere,
           console: updatedGame.console,
           released_at: updatedGame.releaseYear,
           completed_at: updatedGame.completed ? new Date().toISOString() : null,
@@ -88,7 +88,7 @@ export const useGameStore = defineStore('gameStore', () => {
           is_platinated: updatedGame.platinized,
           rating: updatedGame.ratings,
           media: updatedGame.media,
-          cover: updatedGame.coverImageUrl,
+          cover: updatedGame.cover,
         })
       )
       await loadGames()
@@ -109,7 +109,7 @@ export const useGameStore = defineStore('gameStore', () => {
 
   const clearFilters = () => {
     filters.value = {
-      genre: '',
+      genere: '',
       console: '',
       completed: false,
       platinized: false,
@@ -124,15 +124,15 @@ export const useGameStore = defineStore('gameStore', () => {
       filtered = filtered.filter(
         game =>
           game.title.toLowerCase().includes(term) ||
-          (game.genre || '').toLowerCase().includes(term) ||
+          (game.genere || '').toLowerCase().includes(term) ||
           (game.console || '').toLowerCase().includes(term) ||
           (game.description || '').toLowerCase().includes(term) ||
           (game.developer || '').toLowerCase().includes(term)
       )
     }
 
-    if (filters.value.genre) {
-      filtered = filtered.filter(game => game.genre === filters.value.genre)
+    if (filters.value.genere) {
+      filtered = filtered.filter(game => game.genere === filters.value.genere)
     }
     if (filters.value.console) {
       filtered = filtered.filter(game => game.console === filters.value.console)

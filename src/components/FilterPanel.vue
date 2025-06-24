@@ -1,12 +1,12 @@
 <template>
-  <div class="bg-gray-800 p-6 rounded-lg shadow-lg w-[400px] sm:max-w-md">
-    <h2 class="text-xl font-bold mb-4 text-indigo-300">Filtri</h2>
+  <div class="bg-gray-800 p-4 sm:p-6 rounded-lg shadow-lg w-full max-w-sm sm:max-w-md mx-auto">
+    <h2 class="text-xl font-bold mb-4 text-indigo-300 text-center sm:text-left">Filtri</h2>
     <div class="space-y-4">
       <div>
-        <label for="genre" class="block text-gray-300 text-sm font-semibold mb-1">Genere</label>
+        <label for="genere" class="block text-gray-300 text-sm font-semibold mb-1">Genere</label>
         <select
-          id="genre"
-          v-model="filters.genre"
+          id="genere"
+          v-model="filters.genere"
           class="w-full p-2 rounded-lg bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white"
         >
           <option value="">Tutti i generi</option>
@@ -47,35 +47,35 @@
           <option value="Mobile">Mobile</option>
         </select>
       </div>
-      <div class="flex items-center">
+      <div class="flex items-center gap-2">
         <input
           type="checkbox"
           id="completed"
           v-model="filters.completed"
           class="form-checkbox h-5 w-5 text-indigo-600 bg-gray-700 border-gray-600 rounded focus:ring-indigo-500"
         />
-        <label for="completed" class="ml-2 text-gray-300">Completato</label>
+        <label for="completed" class="text-gray-300">Completato</label>
       </div>
-      <div class="flex items-center">
+      <div class="flex items-center gap-2">
         <input
           type="checkbox"
           id="platinized"
           v-model="filters.platinized"
           class="form-checkbox h-5 w-5 text-indigo-600 bg-gray-700 border-gray-600 rounded focus:ring-indigo-500"
         />
-        <label for="platinized" class="ml-2 text-gray-300">Platinato</label>
+        <label for="platinized" class="text-gray-300">Platinato</label>
       </div>
     </div>
-    <div class="mt-6 flex justify-end gap-2">
+    <div class="mt-6 flex flex-col sm:flex-row justify-end gap-2">
       <button
         @click="applyFilters"
-        class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300"
+        class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 w-full sm:w-auto"
       >
         Applica Filtri
       </button>
       <button
         @click="clearFilters"
-        class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300"
+        class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 w-full sm:w-auto"
       >
         Cancella Filtri
       </button>
@@ -93,7 +93,7 @@ const gameStore = useGameStore()
 
 // Inizializza i filtri locali con i valori attuali dello store
 const filters = ref({
-  genre: gameStore.filters.genre,
+  genere: gameStore.filters.genere,
   console: gameStore.filters.console,
   completed: gameStore.filters.completed,
   platinized: gameStore.filters.platinized,
@@ -117,7 +117,7 @@ const applyFilters = () => {
 const clearFilters = () => {
   // Resetta i filtri locali
   filters.value = {
-    genre: '',
+    genere: '',
     console: '',
     completed: false,
     platinized: false,

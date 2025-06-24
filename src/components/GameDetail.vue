@@ -21,7 +21,7 @@
       </svg>
     </button>
 
-    <h1 class="text-4xl font-bold text-indigo-400 mb-4">{{ game.title }}</h1>
+    <h1 class="text-4xl text-center font-bold text-indigo-500 mb-4">{{ game.title }}</h1>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
       <div>
         <img
@@ -65,65 +65,66 @@
         </div>
       </div>
       <div class="text-gray-200">
-        <p class="mb-2">
+        <p class="mb-2 px-4">
           <strong class="text-indigo-300">Genere:</strong>
-          {{ game.genre }}
+          {{ game.genere }}
         </p>
-        <p class="mb-2">
+        <p class="mb-2 px-4">
           <strong class="text-indigo-300">Console:</strong>
           {{ game.console }}
         </p>
-        <p class="mb-2">
+        <p class="mb-2 px-4">
           <strong class="text-indigo-300">Uscita (italia):</strong>
           {{ formatDate(game.releaseDate) }}
         </p>
-        <p class="mb-4">
+        <p class="mb-4 px-4">
           <strong class="text-indigo-300">Software House:</strong>
           {{ game.developer }}
         </p>
         <p class="text-justify mb-6">{{ game.description }}</p>
 
-        <h2 class="text-2xl font-bold text-indigo-300 mb-3">Valutazioni</h2>
-        <div class="space-y-2">
-          <div class="flex items-center gap-12">
-            <strong class="text-indigo-300 w-24">Grafica:</strong>
+        <h2 class="text-2xl font-bold text-indigo-500 mb-3">Valutazioni</h2>
+        <div class="space-y-4 max-w-full px-4 md:max-w-none">
+          <div class="flex items-center gap-8 max-w-full flex-wrap">
+            <strong class="text-indigo-300 w-24 min-w-[100px]">Grafica:</strong>
             <StarRating
               :rating="game.ratings.graphic"
               @update:rating="updateRating('graphic', $event)"
               editable
             />
           </div>
-          <div class="flex items-center gap-12">
-            <strong class="text-indigo-300 w-24">Storia:</strong>
+          <div class="flex items-center gap-8 max-w-full flex-wrap">
+            <strong class="text-indigo-300 w-24 min-w-[100px]">Storia:</strong>
             <StarRating
               :rating="game.ratings.story"
               @update:rating="updateRating('story', $event)"
               editable
             />
           </div>
-          <div class="flex items-center gap-12">
-            <strong class="text-indigo-300 w-24">Sonoro:</strong>
+          <div class="flex items-center gap-8 max-w-full flex-wrap">
+            <strong class="text-indigo-300 w-24 min-w-[100px]">Sonoro:</strong>
             <StarRating
               :rating="game.ratings.audio"
               @update:rating="updateRating('audio', $event)"
               editable
             />
           </div>
-          <div class="flex items-center gap-12">
-            <strong class="text-indigo-300 w-24">Gameplay:</strong>
+          <div class="flex items-center gap-8 max-w-full flex-wrap">
+            <strong class="text-indigo-300 w-24 min-w-[100px]">Gameplay:</strong>
             <StarRating
-              :rating="game.ratings.gamplay"
+              :rating="game.ratings.gameplay"
               @update:rating="updateRating('gameplay', $event)"
               editable
             />
           </div>
-          <div class="flex items-center gap-12">
-            <strong class="text-indigo-300 w-24">Apprezzamento:</strong>
-            <StarRating
-              :rating="game.ratings.general"
-              @update:rating="updateRating('general', $event)"
-              :maxStars="10"
-              editable
+          <div class="flex items-center gap-8 max-w-full flex-wrap">
+            <strong class="text-indigo-300 w-24 min-w-[100px]">Apprezzamento:</strong>
+            <input
+              type="number"
+              min="1"
+              max="10"
+              v-model.number="game.ratings.general"
+              class="input w-20 text-center bg-gray-700 text-white rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
         </div>
@@ -154,7 +155,7 @@
         </template>
       </div>
     </div>
-    <div class="flex justify-end mt-8 gap-2">
+    <div class="flex justify-center mt-8 gap-2">
       <button
         @click="editGame"
         class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300"

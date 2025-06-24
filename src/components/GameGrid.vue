@@ -3,6 +3,7 @@
     <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
       <GameCard v-for="game in filteredGames" :key="game.id" :game="game" />
     </div>
+    <span v-if="!filteredGames || !filteredGames.length">0 giochi trovati</span>
   </div>
 </template>
 
