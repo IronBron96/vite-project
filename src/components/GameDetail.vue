@@ -84,7 +84,7 @@
         <p class="text-justify mb-6">{{ game.description }}</p>
 
         <h2 class="text-2xl font-bold text-indigo-500 mb-3">Valutazioni</h2>
-        <div class="space-y-4 max-w-full px-4 md:max-w-none">
+        <div class="space-y-4 max-w-full md:max-w-none">
           <div class="flex items-center gap-8 max-w-full flex-wrap">
             <strong class="text-indigo-300 w-24 min-w-[100px]">Grafica:</strong>
             <StarRating
@@ -118,11 +118,12 @@
             />
           </div>
           <div class="flex items-center gap-8 max-w-full flex-wrap">
-            <strong class="text-indigo-300 w-24 min-w-[100px]">Apprezzamento:</strong>
+            <strong class="text-indigo-300 w-24 min-w-[100px]">Voto:</strong>
             <input
               type="number"
               min="1"
               max="10"
+              step="0.1"
               v-model.number="game.ratings.general"
               class="input w-20 text-center bg-gray-700 text-white rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />

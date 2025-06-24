@@ -124,8 +124,9 @@
             type="number"
             min="1"
             max="10"
+            step="0.1"
             v-model.number="gameData.ratings.general"
-            class="input w-10 text-center"
+            class="input w-14 text-center"
           />
           <span>/10</span>
         </div>
@@ -239,7 +240,7 @@ const ratingLabels = {
   story: 'Storia',
   audio: 'Audio',
   gameplay: 'Gameplay',
-  general: 'Apprezzamento',
+  general: 'Voto',
 }
 
 const gameData = toRef(props.gameToEdit || { ...defaultGameData })
