@@ -1,0 +1,20 @@
+{
+  "name": "MyGameLibrary",
+  "short_name": "GameLibrary",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0c141b",
+  "theme_color": "#0c141b",
+  "icons": [
+    {
+      "src": "/gamepad.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/gamepad.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
