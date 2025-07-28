@@ -47,23 +47,47 @@
           <option value="Mobile">Mobile</option>
         </select>
       </div>
-      <div class="flex items-center gap-2">
-        <input
-          type="checkbox"
-          id="is_completed"
-          v-model="filters.is_completed"
-          class="form-checkbox h-5 w-5 text-indigo-600 bg-gray-700 border-gray-600 rounded focus:ring-indigo-500"
-        />
-        <label for="is_completed" class="text-gray-300">Completato</label>
-      </div>
-      <div class="flex items-center gap-2">
-        <input
-          type="checkbox"
-          id="is_platinated"
-          v-model="filters.is_platinated"
-          class="form-checkbox h-5 w-5 text-indigo-600 bg-gray-700 border-gray-600 rounded focus:ring-indigo-500"
-        />
-        <label for="is_platinated" class="text-gray-300">Platinato</label>
+      <div class="flex justify-evenly">
+        <div class="flex flex-col">
+          <div class="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="is_completed"
+              v-model="filters.is_completed"
+              class="form-checkbox h-5 w-5 text-indigo-600 bg-gray-700 border-gray-600 rounded focus:ring-indigo-500"
+            />
+            <label for="is_completed" class="text-gray-300">Completato</label>
+          </div>
+          <div class="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="is_platinated"
+              v-model="filters.is_platinated"
+              class="form-checkbox h-5 w-5 text-indigo-600 bg-gray-700 border-gray-600 rounded focus:ring-indigo-500"
+            />
+            <label for="is_platinated" class="text-gray-300">Platinato</label>
+          </div>
+        </div>
+        <div class="flex flex-col">
+          <div class="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="is_digital"
+              v-model="filters.is_digital"
+              class="form-checkbox h-5 w-5 text-indigo-600 bg-gray-700 border-gray-600 rounded focus:ring-indigo-500"
+            />
+            <label for="is_digital" class="text-gray-300">Digital</label>
+          </div>
+          <div class="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="is_psplus"
+              v-model="filters.is_psplus"
+              class="form-checkbox h-5 w-5 text-indigo-600 bg-gray-700 border-gray-600 rounded focus:ring-indigo-500"
+            />
+            <label for="is_psplus" class="text-gray-300">PS+</label>
+          </div>
+        </div>
       </div>
     </div>
     <div class="mt-6 flex flex-col sm:flex-row justify-end gap-2">
@@ -97,14 +121,16 @@ const filters = ref({
   console: gameStore.filters.console,
   is_completed: gameStore.filters.is_completed,
   is_platinated: gameStore.filters.is_platinated,
+  is_digital: gameStore.filters.is_digital,
+  is_psplus: gameStore.filters.is_psplus,
 })
 
 // Watch per aggiornare i filtri dello store ogni volta che i filtri locali cambiano
 // Questo è importante per mantenere lo stato del form sincronizzato con lo store.
 watch(
-  () => gameStore.filters,
+  filters,
   newFilters => {
-    filters.value = { ...newFilters }
+    gameStore.setFilters(newFilters)
   },
   { deep: true }
 )
@@ -121,6 +147,8 @@ const clearFilters = () => {
     console: '',
     is_completed: false,
     is_platinated: false,
+    is_digital: false,
+    is_psplus: false,
   }
   gameStore.clearFilters() // Chiama l'azione per cancellare i filtri nello store
   emit('clear-filters') // Emette l'evento al genitore

@@ -11,6 +11,8 @@ export const useGameStore = defineStore('gameStore', () => {
     console: '',
     is_completed: false,
     is_platinated: false,
+    is_digital: false,
+    is_psplus: false,
   })
 
   const loadGames = async () => {
@@ -116,38 +118,39 @@ export const useGameStore = defineStore('gameStore', () => {
       console: '',
       is_completed: false,
       is_platinated: false,
+      is_digital: false,
+      is_psplus: false,
     }
   }
 
   const filteredGames = computed(() => {
-    let filtered = games.value
+    const term = searchTerm.value.toLowerCase()
+    return games.value.filter(game => {
+      const f = filters.value
 
-    if (searchTerm.value) {
-      const term = searchTerm.value.toLowerCase()
-      filtered = filtered.filter(
-        game =>
-          game.title.toLowerCase().includes(term) ||
-          (game.genere || '').toLowerCase().includes(term) ||
-          (game.console || '').toLowerCase().includes(term) ||
-          (game.description || '').toLowerCase().includes(term) ||
-          (game.developer || '').toLowerCase().includes(term)
+      // Ricerca testuale
+      if (
+        term &&
+        !(
+          game.title?.toLowerCase().includes(term) ||
+          game.genere?.toLowerCase().includes(term) ||
+          game.console?.toLowerCase().includes(term) ||
+          game.description?.toLowerCase().includes(term) ||
+          game.developer?.toLowerCase().includes(term)
+        )
       )
-    }
+        return false
 
-    if (filters.value.genere) {
-      filtered = filtered.filter(game => game.genere === filters.value.genere)
-    }
-    if (filters.value.console) {
-      filtered = filtered.filter(game => game.console === filters.value.console)
-    }
-    if (filters.value.is_completed) {
-      filtered = filtered.filter(game => game.is_completed)
-    }
-    if (filters.value.is_platinated) {
-      filtered = filtered.filter(game => game.is_platinated)
-    }
+      // Filtri
+      if (f.genere && game.genere !== f.genere) return false
+      if (f.console && game.console !== f.console) return false
+      if (f.is_completed && !game.is_completed) return false
+      if (f.is_platinated && !game.is_platinated) return false
+      if (f.is_digital && !game.is_digital) return false
+      if (f.is_psplus && !game.is_psplus) return false
 
-    return filtered
+      return true
+    })
   })
 
   return {

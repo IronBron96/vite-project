@@ -8,10 +8,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { onMounted, computed } from 'vue'
 import { useGameStore } from '../stores/gameStore' // Importa lo store Pinia
-import directus, { getCurrentUser } from '../api/cms'
-import { readItems, createItem } from '@directus/sdk'
 
 const gameStore = useGameStore()
 

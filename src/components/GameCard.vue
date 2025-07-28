@@ -81,7 +81,3 @@ const goToGameDetail = () => {
   router.push(`/game/${props.game.id}`)
 }
 </script>
-
-<style scoped>
-/* You can add specific styles for GameCard here if needed. */
-</style>

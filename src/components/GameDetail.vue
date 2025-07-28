@@ -30,71 +30,10 @@
           class="w-full max-h-[400px] object-contain rounded-lg shadow-md mb-4"
         />
         <div class="flex flex-wrap gap-2 mb-4">
-          <span
-            v-if="game.is_completed"
-            class="bg-green-600 text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-4 w-4 mr-1"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                clip-rule="evenodd"
-              />
-            </svg>
-            Completato
-          </span>
-          <span
-            v-if="game.is_platinated"
-            class="bg-yellow-600 text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-4 w-4 mr-1"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
-            </svg>
-            Platinato
-          </span>
-        </div>
-        <div class="flex flex-wrap gap-2 mb-4">
-          <!-- Completato -->
-          <span
-            v-if="game.completed"
-            class="bg-green-600 text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center"
-          >
-            ✅ Completato
-          </span>
-
-          <!-- Platinato -->
-          <span
-            v-if="game.is_platinated"
-            class="bg-yellow-600 text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center"
-          >
-            🏆 Platinato
-          </span>
-
-          <!-- Digitale -->
-          <span
-            v-if="game.is_digital"
-            class="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center"
-          >
-            💿 Digitale
-          </span>
-
-          <!-- PlayStation Plus -->
-          <span
-            v-if="game.is_psplus"
-            class="bg-purple-500 text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center"
-          >
-            ➕ PS Plus
-          </span>
+          <span v-if="game.completed" class="badge bg-green-600">✅ Completato</span>
+          <span v-if="game.is_platinated" class="badge bg-yellow-600">🏆 Platinato</span>
+          <span v-if="game.is_digital" class="badge bg-blue-500">💿 Digitale</span>
+          <span v-if="game.is_psplus" class="badge bg-purple-500">➕ PS Plus</span>
         </div>
       </div>
 
@@ -108,8 +47,16 @@
           {{ game.console }}
         </p>
         <p class="mb-2 px-4">
-          <strong class="text-indigo-300">Uscita (italia):</strong>
-          {{ formatDate(game.releaseDate) }}
+          <strong class="text-indigo-300">Uscita:</strong>
+          {{ formatDate(game.released_at) || '—' }}
+        </p>
+        <p v-if="game.completed_at" class="mb-2 px-4">
+          <strong class="text-indigo-300">Completato il:</strong>
+          {{ formatDate(game.completed_at) }}
+        </p>
+        <p v-if="game.platinated_at" class="mb-2 px-4">
+          <strong class="text-indigo-300">Platinato il:</strong>
+          {{ formatDate(game.platinated_at) }}
         </p>
         <p class="mb-4 px-4">
           <strong class="text-indigo-300">Software House:</strong>
@@ -288,3 +235,9 @@ const formatDate = dateStr => {
   })
 }
 </script>
+
+<style scoped>
+.badge {
+  @apply text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center;
+}
+</style>
