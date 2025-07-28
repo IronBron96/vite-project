@@ -38,7 +38,7 @@
           <label for="releaseYear" class="block text-sm font-semibold text-gray-300 mb-1">
             Uscita (italia)
           </label>
-          <input id="releaseYear" v-model="gameData.releaseDate" type="date" class="input w-full" />
+          <input id="releaseYear" v-model="gameData.released_at" type="date" class="input w-full" />
         </div>
 
         <div class="md:col-span-2">
@@ -99,7 +99,7 @@
       <h3 class="text-xl font-bold text-indigo-300">Valutazioni</h3>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div
-          v-for="key in Object.keys(gameData.ratings).filter(
+          v-for="key in Object.keys(gameData.rating).filter(
             k => ratingLabels[k] && k !== 'general'
           )"
           :key="key"
@@ -109,8 +109,8 @@
             {{ ratingLabels[key] }}:
           </label>
           <StarRating
-            :rating="gameData.ratings[key]"
-            @update:rating="gameData.ratings[key] = $event"
+            :rating="gameData.rating[key]"
+            @update:rating="gameData.rating[key] = $event"
             editable
           />
         </div>
@@ -125,7 +125,7 @@
             min="1"
             max="10"
             step="0.1"
-            v-model.number="gameData.ratings.general"
+            v-model.number="gameData.rating.general"
             class="input w-14 text-center"
           />
           <span>/10</span>
@@ -137,7 +137,7 @@
           <label class="inline-flex items-center gap-2 text-gray-300">
             <input
               type="checkbox"
-              v-model="gameData.completed"
+              v-model="gameData.is_completed"
               class="form-checkbox text-indigo-600"
             />
             Completato
@@ -145,7 +145,7 @@
           <label class="inline-flex items-center gap-2 text-gray-300">
             <input
               type="checkbox"
-              v-model="gameData.platinized"
+              v-model="gameData.is_platinated"
               class="form-checkbox text-indigo-600"
             />
             Platinato
@@ -184,7 +184,7 @@
 </template>
 
 <script setup>
-import { ref, defineProps, defineEmits, toRef } from 'vue'
+import { ref, reactive, watch, defineProps, defineEmits, toRef } from 'vue'
 import { useGameStore } from '../stores/gameStore'
 import StarRating from './StarRating.vue'
 
@@ -194,6 +194,7 @@ const props = defineProps({
 
 const emit = defineEmits(['game-saved'])
 const gameStore = useGameStore()
+console.log(props.gameToEdit)
 
 const knowngeneres = ref([
   'Adventure',
@@ -219,19 +220,19 @@ const defaultGameData = {
   title: '',
   genere: '',
   console: '',
-  releaseYear: null,
-  softwareHouse: '',
+  released_at: null, // nome DB per data uscita
+  developer: '',
   description: '',
   cover: '',
-  completed: false,
-  platinized: false,
-  media: null,
-  ratings: {
+  is_completed: false, // nome DB per completato
+  is_platinated: false, // nome DB per platinato
+  media: [],
+  rating: {
     graphic: 0,
     story: 0,
     audio: 0,
     gameplay: 0,
-    general: 0, // invece di 'overall'
+    general: 0,
   },
   is_psplus: false,
   is_digital: false,
@@ -245,41 +246,53 @@ const ratingLabels = {
   general: 'Voto',
 }
 
-const gameData = toRef(props.gameToEdit || { ...defaultGameData })
+const gameData = reactive(props.gameToEdit ? { ...props.gameToEdit } : { ...defaultGameData })
 const isEditing = toRef(!!props.gameToEdit)
 
 const addMedia = () => {
-  if (gameData.value.media) {
-    gameData.value.media.push({ type: 'image', url: '' })
+  if (gameData.media) {
+    gameData.media.push({ type: 'image', url: '' })
   } else {
-    gameData.value.media = [{ type: 'image', url: '' }]
+    gameData.media = [{ type: 'image', url: '' }]
   }
 }
 
 const removeMedia = index => {
-  gameData.value.media.splice(index, 1)
+  gameData.media.splice(index, 1)
 }
 
 const saveGame = async () => {
-  // Aggiungi nuovi valori se non esistono
-  if (gameData.value.genere && !knowngeneres.value.includes(gameData.value.genere)) {
-    knowngeneres.value.push(gameData.value.genere)
+  console.log('Valore is_completed prima update:', gameData.is_completed) // DEBUG
+
+  if (gameData.genere && !knowngeneres.value.includes(gameData.genere)) {
+    knowngeneres.value.push(gameData.genere)
     knowngeneres.value.sort((a, b) => a.localeCompare(b))
   }
-  if (gameData.value.console && !knownConsoles.value.includes(gameData.value.console)) {
-    knownConsoles.value.push(gameData.value.console)
+  if (gameData.console && !knownConsoles.value.includes(gameData.console)) {
+    knownConsoles.value.push(gameData.console)
     knownConsoles.value.sort((a, b) => a.localeCompare(b))
   }
 
   if (isEditing.value) {
-    await gameStore.updateGame(gameData.value)
+    await gameStore.updateGame(gameData)
   } else {
-    await gameStore.addGame({ ...gameData.value, id: Date.now().toString() })
+    await gameStore.addGame({ ...gameData, id: Date.now().toString() })
   }
 
   emit('game-saved')
-  gameData.value = { ...defaultGameData }
+  Object.assign(gameData, { ...defaultGameData })
 }
+
+watch(
+  () => props.gameToEdit,
+  newVal => {
+    if (newVal) {
+      Object.assign(gameData, newVal)
+    } else {
+      Object.assign(gameData, defaultGameData)
+    }
+  }
+)
 </script>
 
 <style scoped>

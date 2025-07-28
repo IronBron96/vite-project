@@ -13,14 +13,14 @@
     <!-- Completion and Platinum Status Icons -->
     <div class="absolute top-2 left-2 flex space-x-1">
       <Icon
-        v-if="game.completed"
+        v-if="game.is_completed"
         icon="mdi:flag"
         class="w-6 h-6 border- rounded-full p-1 shadow-md bg-[#4e698fc7]"
         title="Campagna completata"
       />
 
       <Icon
-        v-if="game.platinized"
+        v-if="game.is_platinated"
         icon="mdi:trophy"
         class="w-6 h-6 border- rounded-full p-1 shadow-md bg-[#e6c847d0]"
         title="Campagna completata"

@@ -50,20 +50,20 @@
       <div class="flex items-center gap-2">
         <input
           type="checkbox"
-          id="completed"
-          v-model="filters.completed"
+          id="is_completed"
+          v-model="filters.is_completed"
           class="form-checkbox h-5 w-5 text-indigo-600 bg-gray-700 border-gray-600 rounded focus:ring-indigo-500"
         />
-        <label for="completed" class="text-gray-300">Completato</label>
+        <label for="is_completed" class="text-gray-300">Completato</label>
       </div>
       <div class="flex items-center gap-2">
         <input
           type="checkbox"
-          id="platinized"
-          v-model="filters.platinized"
+          id="is_platinated"
+          v-model="filters.is_platinated"
           class="form-checkbox h-5 w-5 text-indigo-600 bg-gray-700 border-gray-600 rounded focus:ring-indigo-500"
         />
-        <label for="platinized" class="text-gray-300">Platinato</label>
+        <label for="is_platinated" class="text-gray-300">Platinato</label>
       </div>
     </div>
     <div class="mt-6 flex flex-col sm:flex-row justify-end gap-2">
@@ -95,8 +95,8 @@ const gameStore = useGameStore()
 const filters = ref({
   genere: gameStore.filters.genere,
   console: gameStore.filters.console,
-  completed: gameStore.filters.completed,
-  platinized: gameStore.filters.platinized,
+  is_completed: gameStore.filters.is_completed,
+  is_platinated: gameStore.filters.is_platinated,
 })
 
 // Watch per aggiornare i filtri dello store ogni volta che i filtri locali cambiano
@@ -119,8 +119,8 @@ const clearFilters = () => {
   filters.value = {
     genere: '',
     console: '',
-    completed: false,
-    platinized: false,
+    is_completed: false,
+    is_platinated: false,
   }
   gameStore.clearFilters() // Chiama l'azione per cancellare i filtri nello store
   emit('clear-filters') // Emette l'evento al genitore

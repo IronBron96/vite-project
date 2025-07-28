@@ -1,5 +1,5 @@
 <template>
-  <div v-if="game" class="p-6 max-w-4xl mx-auto bg-gray-800 rounded-lg shadow-xl my-8 relative">
+  <div class="p-6 max-w-4xl mx-auto bg-gray-800 rounded-lg shadow-xl my-8 relative">
     <!-- Close Button (X icon) -->
     <button
       @click="closeDetail"
@@ -31,7 +31,7 @@
         />
         <div class="flex flex-wrap gap-2 mb-4">
           <span
-            v-if="game.completed"
+            v-if="game.is_completed"
             class="bg-green-600 text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center"
           >
             <svg
@@ -49,7 +49,7 @@
             Completato
           </span>
           <span
-            v-if="game.platinized"
+            v-if="game.is_platinated"
             class="bg-yellow-600 text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center"
           >
             <svg
@@ -63,7 +63,41 @@
             Platinato
           </span>
         </div>
+        <div class="flex flex-wrap gap-2 mb-4">
+          <!-- Completato -->
+          <span
+            v-if="game.completed"
+            class="bg-green-600 text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center"
+          >
+            ✅ Completato
+          </span>
+
+          <!-- Platinato -->
+          <span
+            v-if="game.is_platinated"
+            class="bg-yellow-600 text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center"
+          >
+            🏆 Platinato
+          </span>
+
+          <!-- Digitale -->
+          <span
+            v-if="game.is_digital"
+            class="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center"
+          >
+            💿 Digitale
+          </span>
+
+          <!-- PlayStation Plus -->
+          <span
+            v-if="game.is_psplus"
+            class="bg-purple-500 text-white px-3 py-1 rounded-full text-sm font-semibold flex items-center"
+          >
+            ➕ PS Plus
+          </span>
+        </div>
       </div>
+
       <div class="text-gray-200">
         <p class="mb-2 px-4">
           <strong class="text-indigo-300">Genere:</strong>
@@ -88,7 +122,7 @@
           <div class="flex items-center gap-8 max-w-full flex-wrap">
             <strong class="text-indigo-300 w-24 min-w-[100px]">Grafica:</strong>
             <StarRating
-              :rating="game.ratings.graphic"
+              :rating="game.rating.graphic"
               @update:rating="updateRating('graphic', $event)"
               editable
             />
@@ -96,7 +130,7 @@
           <div class="flex items-center gap-8 max-w-full flex-wrap">
             <strong class="text-indigo-300 w-24 min-w-[100px]">Storia:</strong>
             <StarRating
-              :rating="game.ratings.story"
+              :rating="game.rating.story"
               @update:rating="updateRating('story', $event)"
               editable
             />
@@ -104,7 +138,7 @@
           <div class="flex items-center gap-8 max-w-full flex-wrap">
             <strong class="text-indigo-300 w-24 min-w-[100px]">Sonoro:</strong>
             <StarRating
-              :rating="game.ratings.audio"
+              :rating="game.rating.audio"
               @update:rating="updateRating('audio', $event)"
               editable
             />
@@ -112,7 +146,7 @@
           <div class="flex items-center gap-8 max-w-full flex-wrap">
             <strong class="text-indigo-300 w-24 min-w-[100px]">Gameplay:</strong>
             <StarRating
-              :rating="game.ratings.gameplay"
+              :rating="game.rating.gameplay"
               @update:rating="updateRating('gameplay', $event)"
               editable
             />
@@ -124,7 +158,7 @@
               min="1"
               max="10"
               step="0.1"
-              v-model.number="game.ratings.general"
+              v-model.number="game.rating.general"
               class="input w-20 text-center bg-gray-700 text-white rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
@@ -171,7 +205,6 @@
       </button>
     </div>
   </div>
-  <div v-else class="text-center p-8 text-xl text-gray-400">Caricamento dettagli gioco...</div>
 </template>
 
 <script setup>
@@ -179,6 +212,7 @@ import { ref, onMounted, watch, defineEmits } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useGameStore } from '../stores/gameStore'
 import StarRating from './StarRating.vue'
+import { toRef } from '@vueuse/core'
 
 const route = useRoute()
 const router = useRouter()
@@ -192,14 +226,13 @@ const props = defineProps({
 })
 const emit = defineEmits(['edit-game'])
 
-const game = ref(null)
+const game = toRef(props.game)
 
 const fetchGameDetails = id => {
   game.value = gameStore.getGameById(id)
   if (!game.value) {
     console.warn(`Gioco con ID ${id} non trovato.`)
   }
-  console.log(game.value)
 }
 
 onMounted(() => {
@@ -216,7 +249,7 @@ watch(
 const updateRating = async (category, newRating) => {
   if (game.value) {
     const updatedGame = { ...game.value }
-    updatedGame.ratings = { ...updatedGame.ratings, [category]: newRating }
+    updatedGame.rating = { ...updatedGame.rating, [category]: newRating }
     await gameStore.updateGame(updatedGame)
     game.value = updatedGame
   }

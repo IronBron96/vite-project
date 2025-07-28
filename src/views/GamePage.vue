@@ -22,19 +22,13 @@
     <!-- Area swipe + animazione -->
     <transition :name="transitionName" mode="out-in">
       <div
-        :key="currentGame?.id || 'loading'"
+        :key="currentGame?.id"
         class="w-full max-w-3xl"
         @touchstart="handleTouchStart"
         @touchend="handleTouchEnd"
       >
-        <!-- Form modifica -->
         <GameForm v-if="showEditForm" :gameToEdit="gameToEdit" @game-saved="handleGameSaved" />
-
-        <!-- Dettagli gioco -->
         <GameDetail v-else-if="currentGame" :game="currentGame" @edit-game="handleEditGame" />
-
-        <!-- Loader -->
-        <div v-else class="text-center text-gray-400 text-xl">Caricamento dettagli gioco...</div>
       </div>
     </transition>
   </div>
@@ -60,6 +54,8 @@ const transitionName = ref('slide-left')
 
 const isMobile = computed(() => window.innerWidth <= 768)
 
+const isFirstLoad = ref(true)
+
 // Carica giochi e imposta il gioco corrente
 onMounted(async () => {
   if (store.games.length === 0) {
@@ -72,7 +68,12 @@ onMounted(async () => {
 watch(
   () => route.params.id,
   (newId, oldId) => {
-    setTransition(newId, oldId)
+    if (isFirstLoad.value) {
+      transitionName.value = '' // niente animazione al primo caricamento
+      isFirstLoad.value = false
+    } else {
+      setTransition(newId, oldId)
+    }
     setCurrentGame()
   }
 )
@@ -157,5 +158,10 @@ function handleGameSaved() {
 .slide-right-leave-to {
   transform: translateX(100%);
   opacity: 0;
+}
+/* nessuna animazione se transitionName è vuota */
+.enter-active,
+.leave-active {
+  transition: none !important;
 }
 </style>

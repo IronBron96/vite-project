@@ -9,8 +9,8 @@ export const useGameStore = defineStore('gameStore', () => {
   const filters = ref({
     genere: '',
     console: '',
-    completed: false,
-    platinized: false,
+    is_completed: false,
+    is_platinated: false,
   })
 
   const loadGames = async () => {
@@ -26,16 +26,16 @@ export const useGameStore = defineStore('gameStore', () => {
         title: game.title,
         genere: game.genere,
         console: game.console,
-        releaseDate: game.released_at,
-        completedDate: game.completed_at,
-        platinatedDate: game.platinated_at,
+        released_at: game.released_at,
+        completed_at: game.completed_at,
+        platinated_at: game.platinated_at,
         developer: game.developer,
         description: game.description,
-        completed: game.is_completed,
-        platinized: game.is_platinated,
+        is_completed: game.is_completed,
+        is_platinated: game.is_platinated,
         is_psplus: game.is_psplus,
         is_digital: game.is_digital,
-        ratings: game.rating || {},
+        rating: game.rating || {},
         media: game.media,
         cover: game.cover,
       }))
@@ -52,20 +52,21 @@ export const useGameStore = defineStore('gameStore', () => {
           title: newGame.title,
           genere: newGame.genere,
           console: newGame.console,
-          released_at: newGame.releaseYear,
-          completed_at: newGame.completed ? new Date().toISOString() : null,
-          platinated_at: newGame.platinized ? new Date().toISOString() : null,
-          developer: newGame.softwareHouse,
+          released_at: newGame.released_at,
+          completed_at: newGame.is_completed ? new Date().toISOString() : null,
+          platinated_at: newGame.is_platinated ? new Date().toISOString() : null,
+          developer: newGame.developer,
           description: newGame.description,
-          is_completed: newGame.completed,
-          is_platinated: newGame.platinized,
-          is_psplus: false, // eventualmente aggiornabile
-          is_digital: false,
-          rating: newGame.ratings,
+          is_completed: newGame.is_completed,
+          is_platinated: newGame.is_platinated,
+          is_psplus: newGame.is_psplus,
+          is_digital: newGame.is_digital,
+          rating: newGame.rating,
           media: newGame.media,
           cover: newGame.cover,
         })
       )
+
       await loadGames()
     } catch (error) {
       console.error('Errore nel salvataggio del gioco:', error)
@@ -79,18 +80,18 @@ export const useGameStore = defineStore('gameStore', () => {
           title: updatedGame.title,
           genere: updatedGame.genere,
           console: updatedGame.console,
-          released_at: updatedGame.releaseYear,
-          completed_at: updatedGame.completed ? new Date().toISOString() : null,
-          platinated_at: updatedGame.platinized ? new Date().toISOString() : null,
-          developer: updatedGame.softwareHouse,
+          released_at: updatedGame.released_at,
+          completed_at: updatedGame.is_completed ? new Date().toISOString() : null,
+          platinated_at: updatedGame.is_platinated ? new Date().toISOString() : null,
+          developer: updatedGame.developer,
           description: updatedGame.description,
-          is_completed: updatedGame.completed,
-          is_platinated: updatedGame.platinized,
-          rating: updatedGame.ratings,
+          is_completed: updatedGame.is_completed,
+          is_platinated: updatedGame.is_platinated,
+          is_psplus: updatedGame.is_psplus,
+          is_digital: updatedGame.is_digital,
+          rating: updatedGame.rating,
           media: updatedGame.media,
           cover: updatedGame.cover,
-          is_psplus: false, // eventualmente aggiornabile
-          is_digital: false,
         })
       )
       await loadGames()
@@ -113,8 +114,8 @@ export const useGameStore = defineStore('gameStore', () => {
     filters.value = {
       genere: '',
       console: '',
-      completed: false,
-      platinized: false,
+      is_completed: false,
+      is_platinated: false,
     }
   }
 
@@ -139,11 +140,11 @@ export const useGameStore = defineStore('gameStore', () => {
     if (filters.value.console) {
       filtered = filtered.filter(game => game.console === filters.value.console)
     }
-    if (filters.value.completed) {
-      filtered = filtered.filter(game => game.completed)
+    if (filters.value.is_completed) {
+      filtered = filtered.filter(game => game.is_completed)
     }
-    if (filters.value.platinized) {
-      filtered = filtered.filter(game => game.platinized)
+    if (filters.value.is_platinated) {
+      filtered = filtered.filter(game => game.is_platinated)
     }
 
     return filtered
