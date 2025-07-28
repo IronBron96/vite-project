@@ -27,14 +27,14 @@
       />
 
       <Icon
-        v-if="game.digital"
+        v-if="game.is_digital"
         icon="mdi:disc-alert"
         class="w-6 h-6 shadow-md text-[#e6c847d0]"
         title="PS+"
       />
 
       <Icon
-        v-if="game.psplus"
+        v-if="game.is_psplus"
         icon="mdi:plus"
         class="w-6 h-6 shadow-md text-[#e6c847d0]"
         title="PS+"

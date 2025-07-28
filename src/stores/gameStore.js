@@ -33,8 +33,8 @@ export const useGameStore = defineStore('gameStore', () => {
         description: game.description,
         completed: game.is_completed,
         platinized: game.is_platinated,
-        psplus: game.is_psplus,
-        digital: game.is_digital,
+        is_psplus: game.is_psplus,
+        is_digital: game.is_digital,
         ratings: game.rating || {},
         media: game.media,
         cover: game.cover,
@@ -89,6 +89,8 @@ export const useGameStore = defineStore('gameStore', () => {
           rating: updatedGame.ratings,
           media: updatedGame.media,
           cover: updatedGame.cover,
+          is_psplus: false, // eventualmente aggiornabile
+          is_digital: false,
         })
       )
       await loadGames()

@@ -155,7 +155,7 @@
           <label class="inline-flex items-center gap-2 text-gray-300">
             <input
               type="checkbox"
-              v-model="gameData.psplus"
+              v-model="gameData.is_psplus"
               class="form-checkbox text-indigo-600"
             />
             PS+
@@ -163,7 +163,7 @@
           <label class="inline-flex items-center gap-2 text-gray-300">
             <input
               type="checkbox"
-              v-model="gameData.digital"
+              v-model="gameData.is_digital"
               class="form-checkbox text-indigo-600"
             />
             Digitale
@@ -233,6 +233,8 @@ const defaultGameData = {
     gameplay: 0,
     general: 0, // invece di 'overall'
   },
+  is_psplus: false,
+  is_digital: false,
 }
 
 const ratingLabels = {
@@ -244,7 +246,6 @@ const ratingLabels = {
 }
 
 const gameData = toRef(props.gameToEdit || { ...defaultGameData })
-console.log(gameData.value)
 const isEditing = toRef(!!props.gameToEdit)
 
 const addMedia = () => {

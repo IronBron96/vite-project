@@ -2,7 +2,7 @@
   <div v-if="game" class="p-6 max-w-4xl mx-auto bg-gray-800 rounded-lg shadow-xl my-8 relative">
     <!-- Close Button (X icon) -->
     <button
-      @click="router.back()"
+      @click="closeDetail"
       class="absolute top-3 right-3 text-gray-400 hover:text-white transition duration-300 z-10"
     >
       <svg
@@ -180,10 +180,17 @@ import { useRoute, useRouter } from 'vue-router'
 import { useGameStore } from '../stores/gameStore'
 import StarRating from './StarRating.vue'
 
-const emit = defineEmits(['edit-game'])
 const route = useRoute()
 const router = useRouter()
 const gameStore = useGameStore()
+
+const props = defineProps({
+  game: {
+    type: Object,
+    required: true,
+  },
+})
+const emit = defineEmits(['edit-game'])
 
 const game = ref(null)
 
@@ -232,6 +239,10 @@ const confirmDelete = async () => {
     await gameStore.deleteGame(game.value.id)
     router.push('/')
   }
+}
+
+function closeDetail() {
+  router.push('/')
 }
 
 const formatDate = dateStr => {
