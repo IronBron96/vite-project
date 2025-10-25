@@ -83,6 +83,14 @@ onMounted(async () => {
     await store.loadGames()
   }
   setCurrentGame()
+
+  // Se c'è un container principale scrollabile, lo resetta
+  const mainContainer = document.querySelector('.main-scroll-container')
+  if (mainContainer) {
+    mainContainer.scrollTo({ top: 0, behavior: 'instant' })
+  } else {
+    window.scrollTo({ top: 0, behavior: 'instant' })
+  }
 })
 
 // Aggiorna se cambia ID nella route
