@@ -23,8 +23,10 @@
     <div class="relative w-full max-w-3xl flex-1 flex items-start justify-center">
       <transition :name="transitionName" mode="out-in">
         <div
+          ref="scrollContainer"
           :key="currentGame?.id"
-          class="absolute inset-0 w-full scroll-hidden overflow-y-auto overscroll-contain touch-pan-y"
+          class="absolute inset-0 w-full overflow-y-auto overscroll-contain touch-pan-y scroll-hidden"
+          @scroll="saveScroll"
           @touchstart="handleTouchStart"
           @touchmove="handleTouchMove"
           @touchend="handleTouchEnd"
@@ -43,6 +45,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useGameStore } from '@/stores/gameStore'
 import GameDetail from '@/components/GameDetail.vue'
 import GameForm from '@/components/GameForm.vue'
+import { nextTick } from 'vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -58,6 +61,21 @@ const transitionName = ref('slide-left')
 const isMobile = computed(() => window.innerWidth <= 768)
 
 const isFirstLoad = ref(true)
+
+const scrollPosition = ref(0)
+const scrollContainer = ref(null)
+
+function saveScroll() {
+  if (scrollContainer.value) {
+    scrollPosition.value = scrollContainer.value.scrollTop
+  }
+}
+
+function restoreScroll() {
+  if (scrollContainer.value) {
+    scrollContainer.value.scrollTo({ top: scrollPosition.value, behavior: 'instant' })
+  }
+}
 
 // Carica giochi e imposta il gioco corrente
 onMounted(async () => {
@@ -84,6 +102,7 @@ watch(
 function setCurrentGame() {
   currentGameIndex.value = store.games.findIndex(g => g.id === route.params.id)
   currentGame.value = store.games[currentGameIndex.value] || null
+  nextTick(() => restoreScroll())
 }
 
 // Determina la direzione della transizione
