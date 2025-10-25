@@ -19,18 +19,21 @@
       ›
     </button>
 
-    <!-- Area swipe + animazione -->
-    <transition :name="transitionName" mode="out-in">
-      <div
-        :key="currentGame?.id"
-        class="w-full max-w-3xl"
-        @touchstart="handleTouchStart"
-        @touchend="handleTouchEnd"
-      >
-        <GameForm v-if="showEditForm" :gameToEdit="gameToEdit" @game-saved="handleGameSaved" />
-        <GameDetail v-else-if="currentGame" :game="currentGame" @edit-game="handleEditGame" />
-      </div>
-    </transition>
+    <!-- Wrapper con altezza dinamica e scroll abilitato -->
+    <div class="relative w-full max-w-3xl flex-1 flex items-start justify-center">
+      <transition :name="transitionName" mode="out-in">
+        <div
+          :key="currentGame?.id"
+          class="absolute inset-0 w-full scroll-hidden overflow-y-auto overscroll-contain touch-pan-y"
+          @touchstart="handleTouchStart"
+          @touchmove="handleTouchMove"
+          @touchend="handleTouchEnd"
+        >
+          <GameForm v-if="showEditForm" :gameToEdit="gameToEdit" @game-saved="handleGameSaved" />
+          <GameDetail v-else-if="currentGame" :game="currentGame" @edit-game="handleEditGame" />
+        </div>
+      </transition>
+    </div>
   </div>
 </template>
 
@@ -91,27 +94,33 @@ function setTransition(newId, oldId) {
 }
 
 // Swipe su mobile
-const startY = ref(0)
+const touchData = ref({ startX: 0, startY: 0, moved: false })
 
 function handleTouchStart(e) {
-  startX.value = e.changedTouches[0].clientX
-  startY.value = e.changedTouches[0].clientY
+  touchData.value = {
+    startX: e.touches[0].clientX,
+    startY: e.touches[0].clientY,
+    moved: false,
+  }
+}
+
+function handleTouchMove(e) {
+  const deltaX = e.touches[0].clientX - touchData.value.startX
+  const deltaY = e.touches[0].clientY - touchData.value.startY
+  if (Math.abs(deltaX) > 10) touchData.value.moved = true
+
+  // Blocca lo scroll verticale se il movimento è orizzontale deciso
+  if (Math.abs(deltaX) > Math.abs(deltaY)) e.preventDefault()
 }
 
 function handleTouchEnd(e) {
-  const endX = e.changedTouches[0].clientX
-  const endY = e.changedTouches[0].clientY
-  const diffX = startX.value - endX
-  const diffY = startY.value - endY
+  const deltaX = e.changedTouches[0].clientX - touchData.value.startX
+  const deltaY = e.changedTouches[0].clientY - touchData.value.startY
 
-  // Ignora swipe quasi verticali
-  if (Math.abs(diffY) > Math.abs(diffX)) return
+  if (!touchData.value.moved || Math.abs(deltaY) > Math.abs(deltaX)) return
 
-  // Aumenta la soglia per evitare tocchi accidentali
-  if (Math.abs(diffX) > 120) {
-    if (diffX > 0) nextGame()
-    else prevGame()
-  }
+  if (deltaX < -120) nextGame()
+  else if (deltaX > 120) prevGame()
 }
 
 // Navigazione
@@ -172,5 +181,20 @@ function handleGameSaved() {
 .enter-active,
 .leave-active {
   transition: none !important;
+}
+
+.scroll-hidden {
+  overflow-y: scroll;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE e Edge legacy */
+}
+
+.scroll-hidden::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.relative > .absolute {
+  top: 0;
+  left: 0;
 }
 </style>
