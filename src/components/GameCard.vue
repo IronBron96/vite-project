@@ -7,7 +7,7 @@
     <img
       :src="game.cover || 'https://placehold.co/400x600/1f2937/d1d5db?text=No+Cover'"
       :alt="`Copertina di ${game.title}`"
-      class="w-full h-64 object-cover"
+      class="w-full h-52 object-cover"
     />
 
     <!-- Completion and Platinum Status Icons -->

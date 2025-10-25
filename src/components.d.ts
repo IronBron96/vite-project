@@ -16,6 +16,7 @@ declare module 'vue' {
     GameForm: typeof import('./components/GameForm.vue')['default']
     GameGrid: typeof import('./components/GameGrid.vue')['default']
     Header: typeof import('./components/Header.vue')['default']
+    LoginForm: typeof import('./components/LoginForm.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SearchBar: typeof import('./components/SearchBar.vue')['default']

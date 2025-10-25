@@ -38,31 +38,31 @@
       </div>
 
       <div class="text-gray-200">
-        <p class="mb-2 px-4">
+        <p class="mb-1 px-4">
           <strong class="text-indigo-300">Genere:</strong>
           {{ game.genere }}
         </p>
-        <p class="mb-2 px-4">
+        <p class="mb-1 px-4">
           <strong class="text-indigo-300">Console:</strong>
           {{ game.console }}
         </p>
-        <p class="mb-2 px-4">
+        <p class="mb-1 px-4">
           <strong class="text-indigo-300">Uscita:</strong>
           {{ formatDate(game.released_at) || '—' }}
         </p>
-        <p v-if="game.completed_at" class="mb-2 px-4">
+        <p v-if="game.completed_at" class="mb-1 px-4">
           <strong class="text-indigo-300">Completato il:</strong>
           {{ formatDate(game.completed_at) }}
         </p>
-        <p v-if="game.platinated_at" class="mb-2 px-4">
+        <p v-if="game.platinated_at" class="mb-1 px-4">
           <strong class="text-indigo-300">Platinato il:</strong>
           {{ formatDate(game.platinated_at) }}
         </p>
-        <p class="mb-4 px-4">
+        <p class="mb-2 px-4">
           <strong class="text-indigo-300">Software House:</strong>
           {{ game.developer }}
         </p>
-        <p class="text-justify mb-6">{{ game.description }}</p>
+        <p class="text-justify mb-3">{{ game.description }}</p>
 
         <h2 class="text-2xl font-bold text-indigo-500 mb-3">Valutazioni</h2>
         <div class="space-y-4 max-w-full md:max-w-none">

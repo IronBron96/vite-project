@@ -91,16 +91,25 @@ function setTransition(newId, oldId) {
 }
 
 // Swipe su mobile
+const startY = ref(0)
+
 function handleTouchStart(e) {
   startX.value = e.changedTouches[0].clientX
+  startY.value = e.changedTouches[0].clientY
 }
 
 function handleTouchEnd(e) {
   const endX = e.changedTouches[0].clientX
-  const diff = startX.value - endX
+  const endY = e.changedTouches[0].clientY
+  const diffX = startX.value - endX
+  const diffY = startY.value - endY
 
-  if (Math.abs(diff) > 50) {
-    if (diff > 0) nextGame()
+  // Ignora swipe quasi verticali
+  if (Math.abs(diffY) > Math.abs(diffX)) return
+
+  // Aumenta la soglia per evitare tocchi accidentali
+  if (Math.abs(diffX) > 120) {
+    if (diffX > 0) nextGame()
     else prevGame()
   }
 }
